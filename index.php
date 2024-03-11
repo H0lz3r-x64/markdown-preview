@@ -1,15 +1,27 @@
 <?php
-// index.php
+require 'vendor/autoload.php';
+
+$input = '';
 $markdown = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['text']) && $_POST['text'] !== '') {
-        $markdown = $_POST['text'];
+        $input = $_POST['text'];
     } else {
-        $markdown = '
-        [!NOTE]
-        No input provided
-        ';
+        $input = '[!NOTE]<br>No input provided<br>';
     }
+
+    // Initialize Parsedown
+    $parsedown = new Parsedown();
+
+    // Convert Markdown to HTML
+    $dirtyHtml = $parsedown->text($input);
+
+    // Configure HTML Purifier
+    $config = HTMLPurifier_Config::createDefault();
+    $purifier = new HTMLPurifier($config);
+
+    // Clean HTML
+    $markdown = $purifier->purify($dirtyHtml);
 }
 ?>
 <!DOCTYPE html>
@@ -29,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #c6c6c6;
             font-family: Arial, sans-serif;
             display: flex;
-            max-height: 100vh;
+            height: 100vh;
             overflow: hidden;
         }
 
@@ -170,11 +182,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </article>
 
     <script>
-        // Get the markdown content from PHP
-        var markdown = <?= json_encode($markdown); ?>;
-        // Use the JS library to convert markdown to HTML
-        document.getElementById('content').innerHTML = DOMPurify.sanitize(marked.parse(markdown));
-        document.getElementById('input_area').value = DOMPurify.sanitize(markdown);
+        var input = DOMPurify.sanitize(<?= json_encode($input); ?>);
+        var markdown = DOMPurify.sanitize(<?= json_encode($markdown); ?>);
+        console.log(markdown);
+        console.log(input);
+        document.getElementById('content').innerHTML = markdown;
+        document.getElementById('input_area').value = input;
 
         var dragger = document.getElementById('dragger');
         var sidebar = document.getElementById('sidebar');
