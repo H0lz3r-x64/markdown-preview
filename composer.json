@@ -1,0 +1,13 @@
+{
+    "name": "h0lz3r-x64/markdown-renderer",
+    "description": "A simple markdown renderer using github's styling",
+    "require": {
+        "erusev/parsedown": "^1.7",
+        "ezyang/htmlpurifier": "^4.13"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.15"
+        }
+    }
+}
