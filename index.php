@@ -136,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         #content {
             flex: 2;
-            margin-top: 10px;
             margin-bottom: 10px;
             overflow-y: auto;
             position: relative;
@@ -165,6 +164,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             /* Change from bottom to right */
             bottom: 0
         }
+
+        #rendered-bar {
+            box-sizing: border-box;
+            width: 980px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #686868;
+            color: #c6c6c6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        #rendered-bar button {
+            background-color: #007acc;
+            /* keep the blue color */
+            color: #fff;
+            /* keep the white color */
+            border: none;
+            border-radius: 0;
+            /* remove border-radius to make buttons square */
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #rendered-bar button:hover {
+            background-color: #005999;
+            /* darken the blue color on hover */
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        #button-group {
+            margin-left: auto;
+        }
+
+        #button-group button {
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            border-radius: 0;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #button-group button:hover {
+            background-color: #005999;
+        }
     </style>
 </head>
 
@@ -175,18 +228,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <textarea id="input_area" name="text" placeholder="Enter markdown text here"></textarea>
             <input type="file" name="file" accept=".md">
             <input type="submit" value="Render">
+
         </form>
         <div id="dragger"></div>
     </div>
 
-    <article id="content" class="markdown-body">
-    </article>
+    <div id="container">
+        <div id="rendered-bar">
+            <span>Rendered markdown</span>
+            <div id="button-group">
+                <button id="copy">Copy</button>
+                <button id="download-raw">Download Raw</button>
+                <button id="download-html">Download HTML</button>
+            </div>
+        </div>
+        <article id="content" class="markdown-body">
+        </article>
+    </div>
 
     <script>
         var input = DOMPurify.sanitize(<?= json_encode($input); ?>);
         var markdown = DOMPurify.sanitize(<?= json_encode($markdown); ?>);
-        console.log(markdown);
-        console.log(input);
         document.getElementById('content').innerHTML = markdown;
         document.getElementById('input_area').value = input;
 
@@ -204,6 +266,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             document.onmousemove = null;
         };
 
+        document.getElementById('copy').addEventListener('click', function () {
+            var textarea = document.createElement('textarea');
+            textarea.textContent = markdown;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        });
+
+
         // Select the file input and textarea elements
         var fileInput = document.querySelector('input[type="file"]');
         var textarea = document.getElementById('input_area');
@@ -220,6 +292,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             reader.onload = function (e) {
                 textarea.value = e.target.result;
             };
+        });
+
+        document.getElementById('download-raw').addEventListener('click', function () {
+            var blob = new Blob([input], { type: "text/plain;charset=utf-8" });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'markdown.md';
+            link.click();
+        });
+
+        document.getElementById('download-html').addEventListener('click', async function () {
+            var cssUrl = 'libs/github-markdown-css-5.5.1/github-markdown.css';
+            var response = await fetch(cssUrl);
+            var css = await response.text();
+
+            var html = '<!DOCTYPE html>\n<html>\n<head>\n';
+            html += '<style>\nbody { background: #0d1117; margin: 25px; }\n' + css + '\n</style>\n';
+            console.log(css)
+            html += '</head>\n<body>\n<article id="content" class="markdown-body">\n';
+            html += markdown; // assuming 'markdown' contains the rendered HTML
+            html += '\n</article>\n</body>\n</html>';
+            console.log(html)
+
+            var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'markdown.html';
+            link.click();
         });
     </script>
 </body>
