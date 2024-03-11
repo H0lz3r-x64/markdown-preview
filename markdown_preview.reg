@@ -1,0 +1,4 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.md\shell\Preview\command]
+@="\"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\" \"http://http://localhost:821/markdown-preview/?text=%1\""
