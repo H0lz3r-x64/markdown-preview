@@ -1,8 +1,11 @@
+<img src="https://github.com/H0lz3r-x64/markdown-preview/blob/main/favicon.svg" width="50" align="right">
+
 # Markdown Renderer
 
 This project is a simple Markdown Renderer built with PHP and JavaScript. It allows you to input Markdown text directly or upload a Markdown file, and it will render the Markdown to HTML.
 
-![image](https://github.com/H0lz3r-x64/markdown-preview/assets/91200978/a967b43c-3f8c-462d-824c-5cb209b5ad95)
+<img src="https://github.com/H0lz3r-x64/markdown-preview/assets/91200978/a967b43c-3f8c-462d-824c-5cb209b5ad95" width="1000">
+
 
 
 
