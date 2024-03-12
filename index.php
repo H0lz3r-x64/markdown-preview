@@ -120,8 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .markdown-body {
             box-sizing: border-box;
-            min-width: 200px;
-            max-width: 980px;
+            width: 880px;
             margin: 0 auto;
             padding: 45px;
             background-color: #2e2e2e;
@@ -167,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         #rendered-bar {
             box-sizing: border-box;
-            width: 980px;
+            width: 880px;
             margin: 0 auto;
             padding: 10px;
             background-color: #686868;
@@ -218,6 +217,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         #button-group button:hover {
             background-color: #005999;
         }
+
+        #filename {
+            background-color: transparent;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            padding: 5px;
+            outline: none;
+            /* simulate a border */
+        }
+
+        #filename:focus {
+            background-color: #1a1a1a;
+            outline: 2px solid #007acc;
+            caret-color: #007acc;
+        }
     </style>
 </head>
 
@@ -235,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div id="container">
         <div id="rendered-bar">
-            <span>Rendered markdown</span>
+            <input type="text" id="filename" value="Rendered markdown">
             <div id="button-group">
                 <button id="copy">Copy</button>
                 <button id="download-raw">Download Raw</button>
@@ -295,15 +311,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
 
         document.getElementById('download-raw').addEventListener('click', function () {
+            var filename = document.getElementById('filename').value;
             var blob = new Blob([input], { type: "text/plain;charset=utf-8" });
             var url = URL.createObjectURL(blob);
             var link = document.createElement('a');
             link.href = url;
-            link.download = 'markdown.md';
+            link.download = filename + '.md';
             link.click();
         });
 
         document.getElementById('download-html').addEventListener('click', async function () {
+            var filename = document.getElementById('filename').value;
+
             var cssUrl = 'libs/github-markdown-css-5.5.1/github-markdown.css';
             var response = await fetch(cssUrl);
             var css = await response.text();
@@ -320,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             var url = URL.createObjectURL(blob);
             var link = document.createElement('a');
             link.href = url;
-            link.download = 'markdown.html';
+            link.download = filename + '.html';
             link.click();
         });
     </script>
