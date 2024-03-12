@@ -2,6 +2,10 @@
 
 This project is a simple Markdown Renderer built with PHP and JavaScript. It allows you to input Markdown text directly or upload a Markdown file, and it will render the Markdown to HTML.
 
+![image](https://github.com/H0lz3r-x64/markdown-preview/assets/91200978/a967b43c-3f8c-462d-824c-5cb209b5ad95)
+
+
+
 ## Features
 
 - Input Markdown text directly into the text area
